@@ -1,17 +1,19 @@
-var passport = require("passport");
-var passportJWT = require("passport-jwt");
-var users = require("./users.js.js");
-var cfg = require("../../config.js");
-var ExtractJwt = passportJWT.ExtractJwt;
-var Strategy = passportJWT.Strategy;
-var params = {
+const passport = require("passport");
+const passportJWT = require("passport-jwt");
+const users = require("../model/users");
+const cfg = require("../config.js");
+
+const ExtractJwt = passportJWT.ExtractJwt;
+const Strategy = passportJWT.Strategy;
+
+const params = {
   secretOrKey: cfg.jwtSecret,
-  jwtFromRequest: ExtractJwt.fromAuthHeader()
+  jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken()
 };
 
 module.exports = () => {
-  var strategy = new Strategy(params, (payload, done) => {
-    var user = users[payload.id] || null;
+  const strategy = new Strategy(params, (payload, done) => {
+    const user = users[payload.id] || null;
     // validade roles and pass tokens
     if (user) {
       return done(null, { id: user.id });
